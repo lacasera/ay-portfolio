@@ -1,0 +1,14 @@
+node_modules
+**/node_modules
+dist
+**/dist
+.git
+*.log
+.DS_Store
+
+# Never bake env files into an image (they are bind-mounted at runtime).
+.env
+.env.*
+**/.env
+**/.env.*
+!**/.env.example

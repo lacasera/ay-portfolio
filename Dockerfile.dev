@@ -1,0 +1,19 @@
+# Shared dev image for both workspaces.
+# npm workspaces hoist dependencies to the root node_modules, so a single
+# install of the whole workspace serves both the backend and the frontend.
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copy only the manifests first so `npm install` is cached across source edits.
+COPY package.json package-lock.json ./
+COPY backend/package.json ./backend/package.json
+COPY frontend/package.json ./frontend/package.json
+
+# Installs all workspaces. node_modules is baked in for the Linux platform
+# (esbuild/rollup/vite ship platform-specific binaries) — which is exactly why
+# the host's macOS node_modules must never be bind-mounted over this.
+RUN npm install
+
+# Source is supplied at runtime via a bind mount (see docker-compose.yml), and
+# compose provides the per-service command — so no COPY of source and no CMD.
