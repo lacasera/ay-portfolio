@@ -18,7 +18,7 @@ interface ModelSearchResponse {
 }
 
 export class EmbeddingModelProvisioner {
-  constructor(private readonly opensearch: OpenSearchClient) { }
+  constructor(private readonly opensearch: OpenSearchClient) {}
 
   async ensureDeployedModelId(): Promise<string> {
     await this.applyClusterSettings();

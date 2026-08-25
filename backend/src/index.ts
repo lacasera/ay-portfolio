@@ -1,17 +1,14 @@
 import "dotenv/config";
-import express, { Request, Response } from "express";
 import cors from "cors";
+import express from "express";
+import { ApiServer } from "./api/server";
+import { ErrorMiddleware } from "./api/error-middleware";
 
-const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT ?? 3001;
 
-app.use(cors());
-app.use(express.json());
-
-app.get("/api/hello", (_req: Request, res: Response) => {
-  res.json({ message: "Hello from the Express backend!" });
-});
-
-app.listen(PORT, () => {
-  console.log(`Backend listening on http://localhost:${PORT}`);
-});
+new ApiServer()
+  .use(cors())
+  .use(express.json())
+  .registerRoutes()
+  .use(new ErrorMiddleware().handle)
+  .start(PORT);

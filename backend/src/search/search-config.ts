@@ -67,6 +67,7 @@ export const INDEX_BODY = {
   },
   mappings: {
     properties: {
+      id: { type: "keyword" },
       name: {
         type: "text",
         analyzer: "text_en",

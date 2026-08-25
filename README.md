@@ -120,3 +120,25 @@ A single-node OpenSearch cluster holds the search index. Embeddings are generate
    ```
 
 The cluster runs with a 2g heap / 4g `mem_limit` — memory is the top failure mode, so give Docker enough RAM. `search:setup` runs automatically as a compose dependency of `backend`; run it manually with `npm run search:setup` if needed. The `osdata` volume persists the index. Config is demo-grade: self-signed TLS with the client verifying off (`OPENSEARCH_*` in `backend/.env`, admin password in root `.env`).
+
+## Search & listing API
+
+The backend serves a read API over the OpenSearch index (Postgres stays the write-side system-of-record).
+
+- **`POST /api/search`** — the demo. Body: `{ q, size?, config: { mode: "keyword"|"hybrid", fields: {name,description,brand}, useSynonyms, hybrid: {keywordWeight, semanticWeight, k} } }`. Returns `{ query, config, took_ms, total, hits: [{ id, score, source, explanation }] }`. Keyword mode returns each hit's BM25 breakdown; hybrid mode returns the fusion view (keyword rank/score, semantic rank/score, fused).
+
+  ```bash
+  # reproduce the bug (keyword) vs fix it (hybrid)
+  curl localhost:3001/api/search -H 'content-type: application/json' -d '{"q":"office bag","config":{"mode":"keyword"}}'
+  curl localhost:3001/api/search -H 'content-type: application/json' -d '{"q":"office bag","config":{"mode":"hybrid","hybrid":{"keywordWeight":0.3,"semanticWeight":0.7,"k":50}}}'
+  ```
+
+- **`GET /api/products`** — browse. Query params: `page`, `size`, `category`, `segment`, `brand`, `color`, `premium`, `in_stock`, `minPrice`, `maxPrice`, `sort` (`relevance`|`price_asc`|`price_desc`|`rating_desc`). Returns `{ total, page, size, items }`.
+
+  ```bash
+  curl 'localhost:3001/api/products?category=Sneakers&sort=price_asc&size=5'
+  ```
+
+- **`GET /health`** — cluster status + index + model readiness (`200` healthy / `503` not ready).
+
+Per-request hybrid weights (the future UI slider) are applied via an inline search pipeline, so the API stays stateless. Invalid input returns `400`; a search when the model isn't deployed returns `503`.
