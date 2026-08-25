@@ -44,8 +44,8 @@ design decision and the eventual README with that goal.
 
 ## 2. Stack
 
-- **Runtime:** Bun (fast startup, runs TypeScript directly, no build step for the
-  backend).
+- **Runtime:** Node.js (`node:20`). TypeScript runs via `tsx` in development
+  (watch mode, no build step) and is compiled with `tsc` for production.
 - **Backend:** Express + TypeScript. A thin, stateless HTTP API over OpenSearch.
 - **Search engine:** OpenSearch (single node) with the **ML Commons**,
   **k-NN**, and **Neural Search** plugins — all bundled in the standard image.

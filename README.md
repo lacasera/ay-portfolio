@@ -70,3 +70,27 @@ BACKEND_HOST_PORT=13001 FRONTEND_HOST_PORT=15173 docker compose up --build
 
 - After changing dependencies, rebuild and renew the cached `node_modules` volumes: `docker compose up --build -V`.
 - File-watching inside the containers uses polling (set via env in `docker-compose.yml`) for reliable reloads on macOS bind mounts. If backend restarts don't fire on save, that's the knob to check.
+
+## Database seeding
+
+The product catalog (`backend/data/catalog.csv`) is loaded into a Postgres `products` table, the system-of-record from which the search index is later derived.
+
+1. Bring up Postgres:
+
+   ```bash
+   docker compose up -d postgres
+   ```
+
+2. Seed the database (idempotent — safe to re-run):
+
+   ```bash
+   # inside the backend container:
+   docker compose exec backend npm run db:seed
+
+   # or from the host (override the DB host to localhost):
+   DATABASE_URL=postgres://ay:ay@localhost:5432/ay_catalog npm run db:seed
+   ```
+
+Postgres credentials and host port come from the root `.env` (`POSTGRES_*`); the backend reads `DATABASE_URL` from `backend/.env`. Data persists in the `pgdata` volume.
+
+`npm run search:index --workspace=backend` is the (deferred) Postgres → OpenSearch projection; it stops with a clear message until OpenSearch is provisioned.
