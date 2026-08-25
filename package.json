@@ -18,7 +18,9 @@
     "format:check": "prettier --check .",
     "docker:up": "docker compose up --build",
     "docker:down": "docker compose down",
-    "db:seed": "npm run db:seed --workspace=backend"
+    "db:seed": "npm run db:seed --workspace=backend",
+    "search:setup": "npm run search:setup --workspace=backend",
+    "search:index": "npm run search:index --workspace=backend"
   },
   "devDependencies": {
     "prettier": "^3.4.2"

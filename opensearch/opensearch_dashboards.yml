@@ -1,0 +1,5 @@
+server.host: "0.0.0.0"
+opensearch.hosts: ["https://opensearch-node1:9200"]
+opensearch.username: "${OPENSEARCH_USERNAME}"
+opensearch.password: "${OPENSEARCH_PASSWORD}"
+opensearch.ssl.verificationMode: none

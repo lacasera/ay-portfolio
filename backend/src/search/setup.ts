@@ -1,8 +1,7 @@
-import "reflect-metadata";
 import "dotenv/config";
-import { ProductIndexer } from "./product-indexer";
+import { SearchSetup } from "./search-setup";
 
-new ProductIndexer()
+new SearchSetup()
   .run()
   .catch((error: unknown) => {
     console.error(error instanceof Error ? error.message : error);

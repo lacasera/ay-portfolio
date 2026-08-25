@@ -9,11 +9,13 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "db:seed": "tsx src/db/seeder/seed.ts",
+    "search:setup": "tsx src/search/setup.ts",
     "search:index": "tsx src/search/index-products.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
+    "@opensearch-project/opensearch": "^3.5.0",
     "cors": "^2.8.5",
     "csv-parse": "^5.6.0",
     "dotenv": "^16.4.7",

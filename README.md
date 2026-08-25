@@ -93,4 +93,30 @@ The product catalog (`backend/data/catalog.csv`) is loaded into a Postgres `prod
 
 Postgres credentials and host port come from the root `.env` (`POSTGRES_*`); the backend reads `DATABASE_URL` from `backend/.env`. Data persists in the `pgdata` volume.
 
-`npm run search:index --workspace=backend` is the (deferred) Postgres → OpenSearch projection; it stops with a clear message until OpenSearch is provisioned.
+## Search indexing (OpenSearch)
+
+A single-node OpenSearch cluster holds the search index. Embeddings are generated **inside OpenSearch** on ingest: the `products` index has a default pipeline whose `text_embedding` processor turns each product's `embed_text` into a 384-dim `embedding` vector (all-MiniLM-L6-v2). The indexer never computes vectors.
+
+1. Bring up the cluster + Dashboards + one-shot setup. The `opensearch-setup` service registers and deploys the model, then creates the ingest pipeline, the `products` k-NN index, and the search pipeline (idempotent), and exits:
+
+   ```bash
+   docker compose up -d --build -V opensearch-node1 opensearch-dashboards opensearch-setup
+   ```
+
+   - OpenSearch: `https://localhost:9200` (admin / `OPENSEARCH_INITIAL_ADMIN_PASSWORD`)
+   - Dashboards: `https://localhost:5601`
+
+2. Project Postgres → OpenSearch (idempotent via `_id`; re-runs overwrite in place):
+
+   ```bash
+   # inside the container (after db:seed):
+   docker compose exec backend npm run search:index
+
+   # or from the host:
+   DATABASE_URL=postgres://ay:ay@localhost:5432/ay_catalog \
+   OPENSEARCH_NODE=https://localhost:9200 \
+   OPENSEARCH_USERNAME=admin OPENSEARCH_PASSWORD=<pw> \
+   npm run search:index --workspace=backend
+   ```
+
+The cluster runs with a 2g heap / 4g `mem_limit` — memory is the top failure mode, so give Docker enough RAM. `search:setup` runs automatically as a compose dependency of `backend`; run it manually with `npm run search:setup` if needed. The `osdata` volume persists the index. Config is demo-grade: self-signed TLS with the client verifying off (`OPENSEARCH_*` in `backend/.env`, admin password in root `.env`).
