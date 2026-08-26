@@ -2,7 +2,7 @@ import { ProductDocument } from "../db/product.entity";
 import { ModelRegistry } from "../search/model-registry";
 import { OpenSearchClient } from "../search/opensearch-client";
 import { INDEX_NAME } from "../search/search-config";
-import { ProductQueryBuilder } from "./query-builder";
+import { KEYWORD_MIN_SHOULD_MATCH, ProductQueryBuilder } from "./query-builder";
 import { SearchHit, SearchRequest, SearchResponse } from "./search-types";
 
 const FUSION_RANKING_SIZE = 100;
@@ -64,7 +64,14 @@ export class SearchService {
         this.queries.hybridBody(request, modelId),
         this.queries.inlinePipeline(request)
       ),
-      this.run(this.queries.keywordBody(request, false, FUSION_RANKING_SIZE)),
+      this.run(
+        this.queries.keywordBody(
+          request,
+          false,
+          FUSION_RANKING_SIZE,
+          KEYWORD_MIN_SHOULD_MATCH
+        )
+      ),
       this.run(
         this.queries.neuralBody(
           request,

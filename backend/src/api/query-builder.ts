@@ -2,6 +2,8 @@ import { SearchRequest } from "./search-types";
 
 const SOURCE_EXCLUDES = ["embedding"];
 
+export const KEYWORD_MIN_SHOULD_MATCH = "2<-25%";
+
 type QueryClause = Record<string, unknown>;
 type SearchBody = Record<string, unknown>;
 
@@ -9,13 +11,14 @@ export class ProductQueryBuilder {
   keywordBody(
     request: SearchRequest,
     explain = false,
-    size = request.size
+    size = request.size,
+    minimumShouldMatch?: string
   ): SearchBody {
     return {
       size,
       _source: { excludes: SOURCE_EXCLUDES },
       explain,
-      query: this.keywordClause(request),
+      query: this.keywordClause(request, minimumShouldMatch),
     };
   }
 
@@ -39,7 +42,7 @@ export class ProductQueryBuilder {
       query: {
         hybrid: {
           queries: [
-            this.keywordClause(request),
+            this.keywordClause(request, KEYWORD_MIN_SHOULD_MATCH),
             this.neuralClause(request, modelId, request.config.hybrid.k),
           ],
         },
@@ -68,13 +71,19 @@ export class ProductQueryBuilder {
     };
   }
 
-  private keywordClause(request: SearchRequest): QueryClause {
+  private keywordClause(
+    request: SearchRequest,
+    minimumShouldMatch?: string
+  ): QueryClause {
     const nameField = request.config.useSynonyms ? "name.syn" : "name";
     const { name, description, brand } = request.config.fields;
     return {
       multi_match: {
         query: request.q,
         type: "best_fields",
+        ...(minimumShouldMatch
+          ? { minimum_should_match: minimumShouldMatch }
+          : {}),
         fields: [
           `${nameField}^${name}`,
           `description^${description}`,
