@@ -1,29 +1,8 @@
+import type { ProductDocument, Segment } from "@ay/shared";
 import { Column, Entity, PrimaryColumn } from "typeorm";
 import { NumericColumnTransformer } from "./numeric-column.transformer";
 
-export type Segment = "women" | "men" | "kids";
-
-export interface ProductDocument {
-  id: string;
-  name: string;
-  description: string;
-  brand: string;
-  segment: Segment;
-  category: string;
-  category_path: string[];
-  color: string;
-  material: string | null;
-  premium: boolean;
-  price: number;
-  original_price: number | null;
-  discount_pct: number | null;
-  in_stock: boolean;
-  avg_rating: number | null;
-  rating_count: number | null;
-  sizes: string[];
-  images: string[];
-  embed_text: string;
-}
+export type { ProductDocument, Segment } from "@ay/shared";
 
 const numeric = new NumericColumnTransformer();
 

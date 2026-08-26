@@ -33,7 +33,12 @@ npm run dev:backend   # http://localhost:3001
 npm run dev:frontend  # http://localhost:5173
 ```
 
-The frontend dev server proxies `/api/*` to the backend, so the React app fetches `/api/hello` and displays the message.
+The frontend dev server proxies `/api/*` to the backend. Open http://localhost:5173:
+
+- **Empty search box → browse** the catalog with category/segment/premium filters, sorting, and pagination.
+- **Type a query → search.** The **keyword ↔ hybrid** toggle is the demo: search `office bag` in **keyword** mode and business/laptop bags are buried; flip to **hybrid** and they jump to the top. Hit count and `took_ms` are shown.
+
+The React/Vite frontend, the Express backend, and the shared API types (`@ay/shared`) all live in the npm workspaces; the request/response types have a single source of truth in `packages/shared`.
 
 ## Run with Docker
 

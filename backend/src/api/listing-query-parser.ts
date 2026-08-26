@@ -2,13 +2,13 @@ import { Segment } from "../db/product.entity";
 import { ListingQuery, ListingSort, ValidationError } from "./search-types";
 
 const MAX_SIZE = 100;
-const SEGMENTS: Segment[] = ["women", "men", "kids"];
-const SORTS: ListingSort[] = [
+const SEGMENTS = ["women", "men", "kids"] as const satisfies readonly Segment[];
+const SORTS = [
   "relevance",
   "price_asc",
   "price_desc",
   "rating_desc",
-];
+] as const satisfies readonly ListingSort[];
 
 type Raw = Record<string, unknown>;
 

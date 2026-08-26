@@ -15,6 +15,7 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
+    "@ay/shared": "*",
     "@opensearch-project/opensearch": "^3.5.0",
     "cors": "^2.8.5",
     "csv-parse": "^5.6.0",

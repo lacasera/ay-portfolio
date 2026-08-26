@@ -1,30 +1,96 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import type { ProductDocument, Segment, SearchMode } from "@ay/shared";
+import { AppHeader } from "./components/AppHeader";
+import { BrowseView } from "./components/BrowseView";
+import { CategorySidebar } from "./components/CategorySidebar";
+import { ProductDetail } from "./components/ProductDetail";
+import { SearchResults } from "./components/SearchResults";
+import { SegmentTabs } from "./components/SegmentTabs";
+import { useListing, type ListingFilters } from "./hooks/useListing";
+import { useSearch } from "./hooks/useSearch";
+import { dominantCategory } from "./lib/dominant-category";
 
-interface HelloResponse {
-  message: string;
-}
+const INITIAL_FILTERS: ListingFilters = {
+  category: null,
+  segment: null,
+  premium: null,
+  inStock: null,
+  sort: "relevance",
+  page: 1,
+};
 
 export default function App() {
-  const [message, setMessage] = useState<string>("Loading...");
+  const [query, setQuery] = useState("");
+  const [mode, setMode] = useState<SearchMode>("hybrid");
+  const [filters, setFilters] = useState<ListingFilters>(INITIAL_FILTERS);
+  const [selected, setSelected] = useState<ProductDocument | null>(null);
 
-  useEffect(() => {
-    fetch("/api/hello")
-      .then((res) => res.json() as Promise<HelloResponse>)
-      .then((data) => setMessage(data.message))
-      .catch(() => setMessage("Failed to reach backend."));
-  }, []);
+  const searching = query.trim().length > 0;
+  const search = useSearch(query, mode);
+  const listing = useListing(filters, !searching);
+
+  const patchFilters = (patch: Partial<ListingFilters>) =>
+    setFilters((prev) => ({ ...prev, ...patch }));
+
+  // Browse: the chosen filter. Search: the category the results land in.
+  const selectedCategory = searching
+    ? search.data
+      ? dominantCategory(search.data.hits)
+      : null
+    : filters.category;
+
+  const selectCategory = (category: string | null) => {
+    setQuery("");
+    patchFilters({ category, page: 1 });
+  };
+
+  const selectSegment = (segment: Segment | null) => {
+    setQuery("");
+    patchFilters({ segment, page: 1 });
+  };
 
   return (
-    <main className="min-h-screen bg-slate-50 flex items-center justify-center p-8">
-      <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-sm ring-1 ring-slate-200">
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-          ay-portfolio
-        </h1>
-        <p className="mt-4 text-sm font-medium text-slate-500">Backend says:</p>
-        <blockquote className="mt-2 border-l-4 border-indigo-500 bg-indigo-50 px-4 py-3 text-slate-800">
-          {message}
-        </blockquote>
-      </div>
-    </main>
+    <div className="min-h-screen bg-slate-50 text-slate-900">
+      <SegmentTabs segment={filters.segment} onChange={selectSegment} />
+      <AppHeader
+        query={query}
+        onQueryChange={setQuery}
+        mode={mode}
+        onModeChange={setMode}
+      />
+
+      {selected ? (
+        <div className="mx-auto max-w-7xl px-4 py-6">
+          <ProductDetail product={selected} onBack={() => setSelected(null)} />
+        </div>
+      ) : (
+        <div className="mx-auto flex max-w-7xl gap-8 px-4 py-6">
+          <aside className="hidden w-56 shrink-0 lg:block">
+            <CategorySidebar
+              selected={selectedCategory}
+              onSelect={selectCategory}
+            />
+          </aside>
+
+          <main className="min-w-0 flex-1">
+            {searching ? (
+              <SearchResults
+                query={query}
+                mode={mode}
+                search={search}
+                onOpen={setSelected}
+              />
+            ) : (
+              <BrowseView
+                filters={filters}
+                listing={listing}
+                onPatch={patchFilters}
+                onOpen={setSelected}
+              />
+            )}
+          </main>
+        </div>
+      )}
+    </div>
   );
 }
