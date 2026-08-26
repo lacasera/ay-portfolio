@@ -1,7 +1,7 @@
 import type { ProductDocument, SearchMode } from "@ay/shared";
 import type { SearchState } from "../hooks/useSearch";
 import { ErrorBanner } from "./ErrorBanner";
-import { ResultGrid } from "./ResultGrid";
+import { SearchResultGrid } from "./SearchResultGrid";
 
 export function SearchResults({
   query,
@@ -29,8 +29,9 @@ export function SearchResults({
       </div>
       {search.error && <ErrorBanner message={search.error} />}
       {search.data && (
-        <ResultGrid
-          products={search.data.hits.map((hit) => hit.source)}
+        <SearchResultGrid
+          hits={search.data.hits}
+          query={query}
           onOpen={onOpen}
         />
       )}
