@@ -1,9 +1,4 @@
-import express, {
-  ErrorRequestHandler,
-  Request,
-  RequestHandler,
-  Response,
-} from "express";
+import express, { ErrorRequestHandler, RequestHandler } from "express";
 import { HealthController } from "./health-controller";
 import { ProductsController } from "./products-controller";
 import { SearchController } from "./search-controller";
@@ -28,9 +23,6 @@ export class ApiServer {
     this.app.get("/health", this.health.handle);
     this.app.post("/api/search", this.search.handle);
     this.app.get("/api/products", this.products.handle);
-    this.app.get("/api/hello", (_req: Request, res: Response) => {
-      res.json({ message: "Hello from the Express backend!" });
-    });
     return this;
   }
 
