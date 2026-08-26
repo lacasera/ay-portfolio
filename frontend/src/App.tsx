@@ -6,6 +6,7 @@ import { CategorySidebar } from "./components/CategorySidebar";
 import { ProductDetail } from "./components/ProductDetail";
 import { SearchResults } from "./components/SearchResults";
 import { SegmentTabs } from "./components/SegmentTabs";
+import { DEFAULT_SEMANTIC_WEIGHT } from "./constants";
 import { useListing, type ListingFilters } from "./hooks/useListing";
 import { useSearch } from "./hooks/useSearch";
 import { dominantCategory } from "./lib/dominant-category";
@@ -24,9 +25,10 @@ export default function App() {
   const [mode, setMode] = useState<SearchMode>("hybrid");
   const [filters, setFilters] = useState<ListingFilters>(INITIAL_FILTERS);
   const [selected, setSelected] = useState<ProductDocument | null>(null);
+  const [semanticWeight, setSemanticWeight] = useState(DEFAULT_SEMANTIC_WEIGHT);
 
   const searching = query.trim().length > 0;
-  const search = useSearch(query, mode);
+  const search = useSearch(query, mode, semanticWeight);
   const listing = useListing(filters, !searching);
 
   const patchFilters = (patch: Partial<ListingFilters>) =>
@@ -78,6 +80,8 @@ export default function App() {
                 query={query}
                 mode={mode}
                 search={search}
+                semanticWeight={semanticWeight}
+                onSemanticWeightChange={setSemanticWeight}
                 onOpen={setSelected}
               />
             ) : (

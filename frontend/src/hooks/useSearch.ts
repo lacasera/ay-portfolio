@@ -12,7 +12,11 @@ export interface SearchState {
   error: string | null;
 }
 
-export function useSearch(query: string, mode: SearchMode): SearchState {
+export function useSearch(
+  query: string,
+  mode: SearchMode,
+  semanticWeight: number
+): SearchState {
   const [state, setState] = useState<SearchState>({
     data: null,
     loading: false,
@@ -31,7 +35,11 @@ export function useSearch(query: string, mode: SearchMode): SearchState {
       setState((prev) => ({ ...prev, loading: true }));
       client
         .search(
-          { q: trimmed, size: PAGE_SIZE, config: buildSearchConfig(mode) },
+          {
+            q: trimmed,
+            size: PAGE_SIZE,
+            config: buildSearchConfig(mode, semanticWeight),
+          },
           controller.signal
         )
         .then((data) => setState({ data, loading: false, error: null }))
@@ -47,7 +55,7 @@ export function useSearch(query: string, mode: SearchMode): SearchState {
       controller.abort();
       clearTimeout(timer);
     };
-  }, [query, mode]);
+  }, [query, mode, semanticWeight]);
 
   return state;
 }

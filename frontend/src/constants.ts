@@ -86,11 +86,22 @@ export const CATEGORIES: string[] = CATEGORY_GROUPS.flatMap(
   (group) => group.items
 );
 
-export function buildSearchConfig(mode: SearchMode): SearchConfig {
+export const DEFAULT_SEMANTIC_WEIGHT = 0.7;
+
+export function buildSearchConfig(
+  mode: SearchMode,
+  semanticWeight = DEFAULT_SEMANTIC_WEIGHT
+): SearchConfig {
+  const semantic = Math.min(1, Math.max(0, semanticWeight));
+  const round = (value: number) => Math.round(value * 100) / 100;
   return {
     mode,
     fields: { name: 3, description: 1, brand: 2 },
     useSynonyms: true,
-    hybrid: { keywordWeight: 0.3, semanticWeight: 0.7, k: 50 },
+    hybrid: {
+      keywordWeight: round(1 - semantic),
+      semanticWeight: round(semantic),
+      k: 50,
+    },
   };
 }
