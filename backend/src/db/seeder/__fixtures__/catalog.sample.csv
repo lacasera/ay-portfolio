@@ -1,0 +1,4 @@
+id,name,description,brand,segment,category,category_path,color,material,premium,price,original_price,discount_pct,in_stock,avg_rating,rating_count,sizes,images,embed_text
+ay-000001,Laptop Bag,A padded commuter bag.,BOSS,men,Business & laptop bags,Accessories|Bags,black,Leather,true,189.90,249.90,24,true,4.6,128,One size,https://example/1.jpg,Laptop Bag BOSS
+ay-000002,Summer Dress,Light floral dress.,Mango,women,Dresses,Clothing|Dresses,red,,false,49.99,,,false,,,XS|S|M,https://example/2a.jpg|https://example/2b.jpg,Summer Dress Mango
+ay-000003,Kids Sneakers,Everyday trainers.,Nike,kids,Sneakers,Shoes|Sneakers,white,Textile,false,39.95,,,true,4.2,10,28|29|30,https://example/3.jpg,Kids Sneakers Nike

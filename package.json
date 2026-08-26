@@ -19,6 +19,7 @@
     "format:check": "prettier --check .",
     "docker:up": "docker compose up --build",
     "docker:down": "docker compose down",
+    "test": "npm run test --workspaces --if-present",
     "db:seed": "npm run db:seed --workspace=backend",
     "search:setup": "npm run search:setup --workspace=backend",
     "search:index": "npm run search:index --workspace=backend"

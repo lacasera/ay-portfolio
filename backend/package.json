@@ -11,6 +11,8 @@
     "db:seed": "tsx src/db/seeder/seed.ts",
     "search:setup": "tsx src/search/setup.ts",
     "search:index": "tsx src/search/index-products.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
@@ -36,6 +38,7 @@
     "globals": "^15.14.0",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3",
-    "typescript-eslint": "^8.20.0"
+    "typescript-eslint": "^8.20.0",
+    "vitest": "^3.0.0"
   }
 }
