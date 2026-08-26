@@ -40,14 +40,37 @@ export const INDEX_BODY = {
     number_of_replicas: 0,
     analysis: {
       filter: {
+        // Plural-only stemmer: singularises product-name plurals (Trainers ->
+        // trainer, Boots -> boot) without over-stemming (kstem/porter turn
+        // "trainers" -> "train"). Runs BEFORE synonyms so plurals expand them.
+        english_stemmer: { type: "stemmer", language: "minimal_english" },
+        // True lexical equivalents in singular form. Deliberately NOT bridging
+        // intent (office->business, gym->sports) — that is the semantic clause's
+        // job and the whole point of the demo.
         fashion_synonyms: {
           type: "synonym_graph",
           synonyms: [
-            "sneakers, trainers, kicks",
-            "jumper, sweater, pullover",
-            "trousers, pants",
-            "tee, t-shirt, tshirt, t shirt",
             "bag, handbag",
+            "purse, handbag",
+            "backpack, rucksack, knapsack",
+            "bum bag, belt bag, fanny pack, waist bag",
+            "tote, shopper",
+            "wallet, billfold",
+            "sneaker, trainer, kick",
+            "high heel, pump, court shoe",
+            "ballet flat, ballerina",
+            "loafer, moccasin",
+            "jumper, sweater, pullover",
+            "trouser, pant, slack",
+            "tee, t-shirt, tshirt, t shirt",
+            "hoodie, hooded sweatshirt",
+            "coat, overcoat",
+            "dress, frock",
+            "scarf, wrap, shawl",
+            "beanie, woolly hat",
+            "grey, gray",
+            "jewelry, jewellery",
+            "colour, color",
           ],
         },
       },
@@ -55,12 +78,18 @@ export const INDEX_BODY = {
         text_en: {
           type: "custom",
           tokenizer: "standard",
-          filter: ["lowercase", "asciifolding", "stop"],
+          filter: ["lowercase", "asciifolding", "english_stemmer", "stop"],
         },
         text_en_syn: {
           type: "custom",
           tokenizer: "standard",
-          filter: ["lowercase", "asciifolding", "fashion_synonyms", "stop"],
+          filter: [
+            "lowercase",
+            "asciifolding",
+            "english_stemmer",
+            "fashion_synonyms",
+            "stop",
+          ],
         },
       },
     },
