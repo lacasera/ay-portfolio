@@ -110,9 +110,6 @@ export class ProductQueryBuilder {
   }
 }
 
-// OpenSearch's normalization-processor casts the combination weights to Double.
-// JSON serialises whole numbers (a 0/1 weight at the slider extremes) without a
-// decimal, which then fails the cast — so keep the weights fractional.
 function asDouble(weight: number): number {
   return Math.min(0.99, Math.max(0.01, weight));
 }

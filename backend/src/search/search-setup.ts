@@ -9,7 +9,7 @@ export class SearchSetup {
       opensearch
     ),
     private readonly indexProvisioner = new ProductIndexProvisioner(opensearch)
-  ) {}
+  ) { }
 
   async run(): Promise<void> {
     console.log("Provisioning embedding model (register + deploy)...");

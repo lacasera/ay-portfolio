@@ -9,7 +9,7 @@ import {
 } from "./search-config";
 
 export class ProductIndexProvisioner {
-  constructor(private readonly opensearch: OpenSearchClient) {}
+  constructor(private readonly opensearch: OpenSearchClient) { }
 
   async ensureIngestPipeline(modelId: string): Promise<void> {
     await this.opensearch.request({
@@ -28,7 +28,11 @@ export class ProductIndexProvisioner {
   }
 
   async ensureIndex(): Promise<void> {
-    if (await this.indexExists()) return;
+
+    if (await this.indexExists()) {
+      return;
+    }
+
     await this.opensearch.request({
       method: "PUT",
       path: `/${INDEX_NAME}`,

@@ -49,10 +49,15 @@ export class OpenSearchClient {
         method: "GET",
         path: `/_plugins/_ml/tasks/${taskId}`,
       });
-      if (task.state === "COMPLETED") return task;
+
+      if (task.state === "COMPLETED") {
+        return task;
+      }
+
       if (task.state === "FAILED") {
         throw new Error(`ML task ${taskId} failed: ${task.error ?? "unknown"}`);
       }
+
       await this.sleep(TASK_POLL_INTERVAL_MS);
     }
     throw new Error(`ML task ${taskId} did not complete in time`);

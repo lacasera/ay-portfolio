@@ -40,13 +40,10 @@ export const INDEX_BODY = {
     number_of_replicas: 0,
     analysis: {
       filter: {
-        // Plural-only stemmer: singularises product-name plurals (Trainers ->
-        // trainer, Boots -> boot) without over-stemming (kstem/porter turn
-        // "trainers" -> "train"). Runs BEFORE synonyms so plurals expand them.
-        english_stemmer: { type: "stemmer", language: "minimal_english" },
-        // True lexical equivalents in singular form. Deliberately NOT bridging
-        // intent (office->business, gym->sports) — that is the semantic clause's
-        // job and the whole point of the demo.
+        english_stemmer: {
+          type: "stemmer",
+          language: "minimal_english"
+        },
         fashion_synonyms: {
           type: "synonym_graph",
           synonyms: [

@@ -21,7 +21,11 @@ function makeRequest(overrides: {
     config: {
       mode: overrides.mode ?? "hybrid",
       useSynonyms: overrides.useSynonyms ?? true,
-      fields: overrides.fields ?? { name: 3, description: 1, brand: 2 },
+      fields: overrides.fields ?? {
+        name: 3,
+        description: 1,
+        brand: 2
+      },
       hybrid: overrides.hybrid ?? {
         keywordWeight: 0.3,
         semanticWeight: 0.7,

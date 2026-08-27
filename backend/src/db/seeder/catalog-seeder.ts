@@ -12,31 +12,37 @@ export class CatalogSeeder {
     private readonly reader = new CatalogCsvReader(),
     private readonly validator = new ProductValidator(),
     private readonly database = new Database()
-  ) {}
+  ) { }
 
   async run(): Promise<void> {
     await this.database.connect();
     try {
       const summary = new SeedSummary();
+
       await this.database.transaction(async (manager) => {
         await manager.clear(Product);
         let batch: Product[] = [];
+
         for await (const product of this.reader.read()) {
           summary.record(product);
           batch.push(product);
+
           if (batch.length >= INSERT_CHUNK_SIZE) {
             await this.flush(manager, batch);
             batch = [];
           }
         }
+
         await this.flush(manager, batch);
       });
 
       const stored = await this.database.getRepository(Product).count();
+
       console.log(
         `Seeded ${summary.count} products; table now holds ${stored}.`
       );
       console.log(summary.format());
+
     } finally {
       await this.database.disconnect();
     }

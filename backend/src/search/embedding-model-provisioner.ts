@@ -18,7 +18,7 @@ interface ModelSearchResponse {
 }
 
 export class EmbeddingModelProvisioner {
-  constructor(private readonly opensearch: OpenSearchClient) {}
+  constructor(private readonly opensearch: OpenSearchClient) { }
 
   async ensureDeployedModelId(): Promise<string> {
     await this.applyClusterSettings();
@@ -50,8 +50,16 @@ export class EmbeddingModelProvisioner {
         query: {
           bool: {
             must: [
-              { match_phrase: { name: EMBEDDING_MODEL.name } },
-              { term: { model_state: "DEPLOYED" } },
+              {
+                match_phrase: {
+                  name: EMBEDDING_MODEL.name
+                }
+              },
+              {
+                term: {
+                  model_state: "DEPLOYED"
+                }
+              },
             ],
           },
         },
@@ -69,7 +77,14 @@ export class EmbeddingModelProvisioner {
     const existing = await this.opensearch.request<ModelSearchResponse>({
       method: "POST",
       path: "/_plugins/_ml/model_groups/_search",
-      body: { size: 1, query: { match_phrase: { name: MODEL_GROUP } } },
+      body: {
+        size: 1,
+        query: {
+          match_phrase: {
+            name: MODEL_GROUP
+          }
+        }
+      },
     });
 
     const found = existing.hits?.hits?.[0]?._id;
@@ -81,7 +96,10 @@ export class EmbeddingModelProvisioner {
     const created = await this.opensearch.request<RegisterResponse>({
       method: "POST",
       path: "/_plugins/_ml/model_groups/_register",
-      body: { name: MODEL_GROUP, description: "hybrid search models" },
+      body: {
+        name: MODEL_GROUP,
+        description: "hybrid search models"
+      },
     });
 
     if (!created.model_group_id) {
@@ -95,7 +113,10 @@ export class EmbeddingModelProvisioner {
     const response = await this.opensearch.request<RegisterResponse>({
       method: "POST",
       path: "/_plugins/_ml/models/_register",
-      body: { ...EMBEDDING_MODEL, model_group_id: modelGroupId },
+      body: {
+        ...EMBEDDING_MODEL,
+        model_group_id: modelGroupId
+      },
     });
 
     if (!response.task_id) {

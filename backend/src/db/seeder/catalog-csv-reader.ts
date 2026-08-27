@@ -28,7 +28,9 @@ export class CatalogCsvReader {
   }
 
   private toProduct(row: RawRow): Product {
+
     const product = new Product();
+
     product.id = row.id!;
     product.name = row.name!;
     product.description = row.description!;
@@ -48,6 +50,7 @@ export class CatalogCsvReader {
     product.sizes = this.splitList(row.sizes!);
     product.images = this.splitList(row.images!);
     product.embedText = row.embed_text!;
+
     return product;
   }
 
