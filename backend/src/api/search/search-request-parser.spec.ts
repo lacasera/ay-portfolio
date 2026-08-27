@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { SearchRequestParser } from "./search-request-parser";
-import { ValidationError } from "./search-types";
+import { ValidationError } from "../shared/search-types";
 
 const parser = new SearchRequestParser();
 

@@ -2,7 +2,7 @@ import "dotenv/config";
 import cors from "cors";
 import express from "express";
 import { ApiServer } from "./api/server";
-import { ErrorMiddleware } from "./api/error-middleware";
+import { ErrorMiddleware } from "./api/shared/error-middleware";
 
 const PORT = process.env.PORT ?? 3001;
 

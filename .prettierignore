@@ -4,3 +4,6 @@ data
 *.log
 package-lock.json
 project-overview.md
+**/.terraform
+*.tfstate
+*.tfstate.*

@@ -1,7 +1,7 @@
 import express, { ErrorRequestHandler, RequestHandler } from "express";
-import { HealthController } from "./health-controller";
-import { ProductsController } from "./products-controller";
-import { SearchController } from "./search-controller";
+import { HealthController } from "./health/health-controller";
+import { ProductsController } from "./products/products-controller";
+import { SearchController } from "./search/search-controller";
 
 type Middleware = RequestHandler | ErrorRequestHandler;
 

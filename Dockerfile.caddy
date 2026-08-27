@@ -1,0 +1,17 @@
+# Edge image: build the frontend to static assets, then serve the SPA +
+# reverse-proxy /api with automatic HTTP-01 TLS. Stock Caddy is enough — the
+# HTTP-01 challenge needs no DNS plugin.
+FROM node:20-alpine AS frontend
+WORKDIR /app
+COPY package.json package-lock.json ./
+COPY backend/package.json ./backend/package.json
+COPY frontend/package.json ./frontend/package.json
+COPY packages/shared/package.json ./packages/shared/package.json
+RUN npm ci
+COPY packages/shared ./packages/shared
+COPY frontend ./frontend
+RUN npm run build --workspace=frontend
+
+FROM caddy:2-alpine
+COPY --from=frontend /app/frontend/dist /srv
+COPY Caddyfile /etc/caddy/Caddyfile

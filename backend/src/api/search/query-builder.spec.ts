@@ -4,7 +4,7 @@ import type {
   HybridConfig,
   SearchMode,
   SearchRequest,
-} from "./search-types";
+} from "../shared/search-types";
 import { KEYWORD_MIN_SHOULD_MATCH, ProductQueryBuilder } from "./query-builder";
 
 function makeRequest(overrides: {

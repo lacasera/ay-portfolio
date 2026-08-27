@@ -1,0 +1,88 @@
+# Production stack: only Caddy is exposed (80/443); everything else stays on the
+# internal network. Secrets come from an env file (--env-file .env.prod) or a
+# `doppler run` environment. Run the data bootstrap with scripts/bootstrap-data.sh.
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_DB: "${POSTGRES_DB}"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  opensearch-node1:
+    image: opensearchproject/opensearch:2.17.0
+    restart: unless-stopped
+    environment:
+      cluster.name: ay-search
+      node.name: opensearch-node1
+      discovery.type: single-node
+      bootstrap.memory_lock: "true"
+      OPENSEARCH_JAVA_OPTS: "-Xms2g -Xmx2g"
+      OPENSEARCH_INITIAL_ADMIN_PASSWORD: "${OPENSEARCH_INITIAL_ADMIN_PASSWORD}"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    mem_limit: 4g
+    volumes:
+      - osdata:/usr/share/opensearch/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -sf -k -u admin:${OPENSEARCH_INITIAL_ADMIN_PASSWORD} https://localhost:9200/_cluster/health || exit 1",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 30
+      start_period: 60s
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      PORT: "3001"
+      DATABASE_URL: "${DATABASE_URL}"
+      OPENSEARCH_NODE: "${OPENSEARCH_NODE}"
+      OPENSEARCH_USERNAME: "${OPENSEARCH_USERNAME}"
+      OPENSEARCH_PASSWORD: "${OPENSEARCH_PASSWORD}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      opensearch-node1:
+        condition: service_healthy
+
+  caddy:
+    build:
+      context: .
+      dockerfile: Dockerfile.caddy
+    restart: unless-stopped
+    environment:
+      CADDY_SITE_ADDRESS: "${CADDY_SITE_ADDRESS:-ay.barfiagyenim.dev}"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
+  osdata:
+  caddy_data:
+  caddy_config:

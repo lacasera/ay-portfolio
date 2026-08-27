@@ -1,0 +1,14 @@
+# Overlay for a local smoke test of the production images (no domain, no TLS).
+# Usage:
+#   docker compose -f docker-compose.prod.yml -f docker-compose.local.yml \
+#     --env-file .env.local up -d --build
+# Then run the bootstrap with a matching COMPOSE_CMD (see scripts/bootstrap-data.sh).
+services:
+  caddy:
+    environment:
+      CADDY_SITE_ADDRESS: ":80"
+      CLOUDFLARE_API_TOKEN: ""
+    ports:
+      - "8080:80"
+    volumes:
+      - ./Caddyfile.local:/etc/caddy/Caddyfile:ro

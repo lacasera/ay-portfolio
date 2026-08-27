@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { ModelRegistry } from "../search/model-registry";
-import type { OpenSearchClient } from "../search/opensearch-client";
+import type { ModelRegistry } from "../../search/model-registry";
+import type { OpenSearchClient } from "../../search/opensearch-client";
 import { SearchService } from "./search-service";
-import { SearchConfig, SearchRequest } from "./search-types";
+import { SearchConfig, SearchRequest } from "../shared/search-types";
 
 // Fake OpenSearch/ModelRegistry so nothing touches a cluster. The real DI
 // defaults would throw at construction without OPENSEARCH_NODE.

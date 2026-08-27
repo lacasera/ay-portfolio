@@ -1,4 +1,4 @@
-import { SearchRequest } from "./search-types";
+import { SearchRequest } from "../shared/search-types";
 
 const SOURCE_EXCLUDES = ["embedding"];
 

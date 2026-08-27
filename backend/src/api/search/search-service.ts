@@ -1,9 +1,13 @@
-import { ProductDocument } from "../db/product.entity";
-import { ModelRegistry } from "../search/model-registry";
-import { OpenSearchClient } from "../search/opensearch-client";
-import { INDEX_NAME } from "../search/search-config";
+import { ProductDocument } from "../../db/product.entity";
+import { ModelRegistry } from "../../search/model-registry";
+import { OpenSearchClient } from "../../search/opensearch-client";
+import { INDEX_NAME } from "../../search/search-config";
 import { KEYWORD_MIN_SHOULD_MATCH, ProductQueryBuilder } from "./query-builder";
-import { SearchHit, SearchRequest, SearchResponse } from "./search-types";
+import {
+  SearchHit,
+  SearchRequest,
+  SearchResponse,
+} from "../shared/search-types";
 
 const FUSION_RANKING_SIZE = 100;
 

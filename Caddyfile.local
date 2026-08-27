@@ -1,0 +1,16 @@
+# Local smoke-test edge config: plain HTTP on :80, no TLS / no Cloudflare.
+# Used only via docker-compose.local.yml to validate the production images
+# before deploying. Serves the same built SPA and proxies /api to the backend.
+:80 {
+	encode gzip
+
+	handle /api/* {
+		reverse_proxy backend:3001
+	}
+
+	handle {
+		root * /srv
+		try_files {path} /index.html
+		file_server
+	}
+}

@@ -1,7 +1,11 @@
-import { ProductDocument } from "../db/product.entity";
-import { OpenSearchClient } from "../search/opensearch-client";
-import { INDEX_NAME } from "../search/search-config";
-import { ListingQuery, ListingResponse, ListingSort } from "./search-types";
+import { ProductDocument } from "../../db/product.entity";
+import { OpenSearchClient } from "../../search/opensearch-client";
+import { INDEX_NAME } from "../../search/search-config";
+import {
+  ListingQuery,
+  ListingResponse,
+  ListingSort,
+} from "../shared/search-types";
 
 interface OsResponse {
   hits: {

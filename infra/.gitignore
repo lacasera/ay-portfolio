@@ -1,0 +1,11 @@
+# Terraform state (may contain the server IP and sensitive values), local dirs,
+# provider plugins, and any real tfvars.
+*.tfstate
+*.tfstate.*
+.terraform/
+crash.log
+terraform.tfvars
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json

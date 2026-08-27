@@ -1,0 +1,18 @@
+# Production edge config. Serves the built SPA from /srv, forwards /api to the
+# backend, and terminates TLS with a Let's Encrypt cert. The site address is a
+# real hostname, so Caddy obtains and renews the cert automatically via the
+# HTTP-01 challenge — this requires the DNS record to be DNS-only (not proxied)
+# so Let's Encrypt reaches the origin directly, and ports 80/443 to be open.
+{$CADDY_SITE_ADDRESS:ay.barfiagyenim.dev} {
+	encode gzip
+
+	handle /api/* {
+		reverse_proxy backend:3001
+	}
+
+	handle {
+		root * /srv
+		try_files {path} /index.html
+		file_server
+	}
+}

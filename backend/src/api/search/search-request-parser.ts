@@ -5,7 +5,7 @@ import {
   SearchConfig,
   SearchRequest,
   ValidationError,
-} from "./search-types";
+} from "../shared/search-types";
 
 const MAX_SIZE = 50;
 const MAX_K = 200;

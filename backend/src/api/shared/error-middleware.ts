@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ModelNotDeployedError } from "../search/model-registry";
+import { ModelNotDeployedError } from "../../search/model-registry";
 import { ValidationError } from "./search-types";
 
 export class ErrorMiddleware {

@@ -1,5 +1,9 @@
-import { Segment } from "../db/product.entity";
-import { ListingQuery, ListingSort, ValidationError } from "./search-types";
+import { Segment } from "../../db/product.entity";
+import {
+  ListingQuery,
+  ListingSort,
+  ValidationError,
+} from "../shared/search-types";
 
 const MAX_SIZE = 100;
 const SEGMENTS = ["women", "men", "kids"] as const satisfies readonly Segment[];

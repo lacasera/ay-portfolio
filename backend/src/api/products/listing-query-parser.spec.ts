@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { ListingQueryParser } from "./listing-query-parser";
-import { ValidationError } from "./search-types";
+import { ValidationError } from "../shared/search-types";
 
 const parser = new ListingQueryParser();
 

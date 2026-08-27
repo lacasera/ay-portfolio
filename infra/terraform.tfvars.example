@@ -1,0 +1,12 @@
+# Copy to terraform.tfvars and adjust. All values have defaults except where you
+# want to override them; the file is optional.
+
+# ssh_public_key_path = "~/.ssh/id_ed25519.pub"
+
+# Lock SSH to your own IP instead of the world:
+# ssh_allowed_ips = ["203.0.113.4/32"]
+
+# cloudflare_zone = "barfiagyenim.dev"
+# subdomain       = "ay"
+# server_type     = "cax31"
+# location        = "nbg1"
